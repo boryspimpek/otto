@@ -22,7 +22,7 @@ const int JOYSTICK_DEADZONE = 10;
 const int MAX_SERVO_SPEED = 180;
 
 int LNP = 65;     // Left leg neutral position
-int RNP = 120;    // Right leg neutral position
+int RNP = 117;    // Right leg neutral position
 
 void onConnect() {
   Serial.println("Connected!");
@@ -76,8 +76,8 @@ void setup() {
   servoLeftFoot.write(90);    // Stop - no rotation
   servoRightFoot.write(90);   // Stop - no rotation
   
-  servoLeftLeg.write(60);     // Position in degrees
-  servoRightLeg.write(120);   // Position in degrees
+  servoLeftLeg.write(LNP);     // Position in degrees
+  servoRightLeg.write(RNP);   // Position in degrees
 
   Serial.begin(115200);
   PS4.attachOnConnect(onConnect);
