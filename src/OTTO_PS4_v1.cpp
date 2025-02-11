@@ -83,7 +83,7 @@ void returnToNeutral() {
 void rightLegSwing() {
   moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 100, servoRightLeg, servoRightLeg.read(), 175, 20, 15); // Pozycja idąca lewa
   delay(150);
-  servoLeftFoot.write(90 + 25);  // Obrót lewej stopy serwo 360
+  servoLeftFoot.write(90 + 20);  // Obrót lewej stopy serwo 360
 
   moveServoSmooth(servoRightLeg, 175, 60, 20, 15);  
   delay(100);  
@@ -103,23 +103,6 @@ void rightLegSwing() {
   delay(150);
 }
 
-/*void moonWalk() {
-  moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 100, servoRightLeg, servoRightLeg.read(), 175, 20, 15); 
-  delay(150);
-  moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 5, servoRightLeg, servoRightLeg.read(), 80, 20, 15); 
-  delay(150);
-  moveServoSmooth(servoLeftLeg, 35, 65, 20, 10);
-  delay(300);
-
-  moveServoSmooth(servoLeftLeg, 65, 35, 20, 10);
-  delay(150);
-  moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 85, servoRightLeg, servoRightLeg.read(), 152, 20, 15); 
-  delay(150);
-  moveServoSmooth(servoRightLeg, 152, 117, 20, 10);
-  delay(300);
-}*/
-
-
 void moonWalk() {
   moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 85, servoRightLeg, servoRightLeg.read(), 152, 30, 20); 
   delay(150);
@@ -128,13 +111,6 @@ void moonWalk() {
   moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 85, servoRightLeg, servoRightLeg.read(), 152, 30, 20); 
   delay(150);
   moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 35, servoRightLeg, servoRightLeg.read(), 103, 30, 20); 
-  delay(150);
-}
-
-void steppin() {
-  moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 100, servoRightLeg, servoRightLeg.read(), 110, 30, 20); 
-  delay(150);
-  moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 75, servoRightLeg, servoRightLeg.read(), 80, 30, 20);
   delay(150);
 }
 
@@ -205,7 +181,7 @@ void loop() {
       wasL1Pressed = false;
     }
 
-    // Circle button handling
+    // R1 button handling
     if (PS4.R1()) {
       if (!wasR1Pressed) {
         manualOverride = true;  // Blokowanie joysticka
@@ -240,7 +216,6 @@ void loop() {
       if (!wasCrossPressed) {
         manualOverride = true;
         moonWalk();
-        steppin();
         wasCrossPressed = true;
       }
     } else if (wasCrossPressed) {
