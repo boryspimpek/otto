@@ -14,8 +14,10 @@ Servo servoRightLeg;
 bool wasSquarePressed = false;
 bool wasCirclePressed = false;
 bool wasTrianglePressed = false;
+bool wasCrossPressed = false;
 bool wasL1Pressed = false;
-bool L1StateActive = false;
+bool wasR1Pressed = false;
+bool SquareStateActive = false;
 bool manualOverride = false;
 
 const int JOYSTICK_DEADZONE = 10;
@@ -81,10 +83,10 @@ void returnToNeutral() {
 void rightLegSwing() {
   moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 100, servoRightLeg, servoRightLeg.read(), 175, 20, 15); // Pozycja idąca lewa
   delay(150);
-  servoLeftFoot.write(90 + 17);  // Obrót lewej stopy serwo 360
+  servoLeftFoot.write(90 + 25);  // Obrót lewej stopy serwo 360
 
   moveServoSmooth(servoRightLeg, 175, 60, 20, 15);  
-  delay(300);  
+  delay(100);  
   moveServoSmooth(servoRightLeg, 60, 120, 20, 10);  
   delay(100);
   moveServoSmooth(servoRightLeg, 120, 60, 20, 10);  
@@ -101,6 +103,40 @@ void rightLegSwing() {
   delay(150);
 }
 
+/*void moonWalk() {
+  moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 100, servoRightLeg, servoRightLeg.read(), 175, 20, 15); 
+  delay(150);
+  moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 5, servoRightLeg, servoRightLeg.read(), 80, 20, 15); 
+  delay(150);
+  moveServoSmooth(servoLeftLeg, 35, 65, 20, 10);
+  delay(300);
+
+  moveServoSmooth(servoLeftLeg, 65, 35, 20, 10);
+  delay(150);
+  moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 85, servoRightLeg, servoRightLeg.read(), 152, 20, 15); 
+  delay(150);
+  moveServoSmooth(servoRightLeg, 152, 117, 20, 10);
+  delay(300);
+}*/
+
+
+void moonWalk() {
+  moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 85, servoRightLeg, servoRightLeg.read(), 152, 30, 20); 
+  delay(150);
+  moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 35, servoRightLeg, servoRightLeg.read(), 103, 30, 20); 
+  delay(150);
+  moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 85, servoRightLeg, servoRightLeg.read(), 152, 30, 20); 
+  delay(150);
+  moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 35, servoRightLeg, servoRightLeg.read(), 103, 30, 20); 
+  delay(150);
+}
+
+void steppin() {
+  moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 100, servoRightLeg, servoRightLeg.read(), 110, 30, 20); 
+  delay(150);
+  moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 75, servoRightLeg, servoRightLeg.read(), 80, 30, 20);
+  delay(150);
+}
 
 void setup() {
   servoLeftFoot.attach(servoLeftFootPin, 544, 2400);
@@ -136,54 +172,54 @@ void loop() {
       servoRightFoot.write(180 - rightFootSpeed);
     }
 
-    // L1 button handling
-    if (PS4.L1()) {
-      if (!wasL1Pressed) {
-        wasL1Pressed = true;
-        if (!L1StateActive) {
-          moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 180, servoRightLeg, servoRightLeg.read(), 0, 20, 15);
-          L1StateActive = true;
-        } else {
-          returnToNeutral();
-          L1StateActive = false;
-        }
-      }
-    } else {
-      wasL1Pressed = false;
-    }
-
     // Square button handling
     if (PS4.Square()) {
       if (!wasSquarePressed) {
+        wasSquarePressed = true;
+        if (!SquareStateActive) {
+          moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 180, servoRightLeg, servoRightLeg.read(), 0, 20, 15);
+          SquareStateActive = true;
+        } else {
+          returnToNeutral();
+          SquareStateActive = false;
+        }
+      }
+    } else {
+      wasSquarePressed = false;
+    }
+
+    // L1 button handling
+    if (PS4.L1()) {
+      if (!wasL1Pressed) {
         manualOverride = true;  // Blokowanie joysticka
         moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 100, servoRightLeg, servoRightLeg.read(), 175, 20, 15); // Pozycja idąca lewa
         delay(150);
         servoLeftFoot.write(90 + 25); // Obrót w prawo, ustawienie prędkości serwa 360
-        wasSquarePressed = true;
+        wasL1Pressed = true;
       }
-    } else if (wasSquarePressed) {
+    } else if (wasL1Pressed) {
       servoLeftFoot.write(90); // Natychmiastowe zatrzymanie obrotu
       delay(150);
       returnToNeutral();
       manualOverride = false; // Odblokowanie joysticka
-      wasSquarePressed = false;
+      wasL1Pressed = false;
     }
 
     // Circle button handling
-    if (PS4.Circle()) {
-      if (!wasCirclePressed) {
+    if (PS4.R1()) {
+      if (!wasR1Pressed) {
         manualOverride = true;  // Blokowanie joysticka
         moveServosSmooth(servoRightLeg, servoRightLeg.read(), 80, servoLeftLeg, servoLeftLeg.read(), 5, 20, 15);  // Pozycja idąca prawo
         delay(150);
         servoRightFoot.write(90 - 20); // Obrót w lewo, ustawienie prędkości serwa 360
-        wasCirclePressed = true;
+        wasR1Pressed = true;
       }
-    } else if (wasCirclePressed) {
+    } else if (wasR1Pressed) {
       servoRightFoot.write(90); // Natychmiastowe zatrzymanie obrotu
       delay(150);
       returnToNeutral();
       manualOverride = false; // Odblokowanie joysticka
-      wasCirclePressed = false;
+      wasR1Pressed = false;
     }
 
     // Triangle button handling
@@ -198,5 +234,20 @@ void loop() {
       manualOverride = false; // Odblokowanie joysticka
       wasTrianglePressed = false;
     }
+
+    // Cross butto handling
+    if (PS4.Cross()) {
+      if (!wasCrossPressed) {
+        manualOverride = true;
+        moonWalk();
+        steppin();
+        wasCrossPressed = true;
+      }
+    } else if (wasCrossPressed) {
+      returnToNeutral();  // Powrót do neutralnej pozycji po zakończeniu ruchów
+      manualOverride = false; // Odblokowanie joysticka
+      wasCrossPressed = false;
+    }
+
   }
 }
