@@ -46,14 +46,11 @@ int mapJoystickToSpeed(int value) {
 void moveServosSmooth(Servo &servo1, int start1, int end1, Servo &servo2, int start2, int end2, int steps, int delayTime) {
   int diff1 = end1 - start1;
   int diff2 = end2 - start2;
-  
   for (int i = 0; i <= steps; i++) {
     int pos1 = start1 + (diff1 * i / steps);
     int pos2 = start2 + (diff2 * i / steps);
-    
     servo1.write(pos1);
     servo2.write(pos2);
-    
     delay(delayTime);
   }
 }
@@ -63,9 +60,7 @@ void moveServoSmooth(Servo &servo1, int start1, int end1, int steps, int delayTi
 
   for (int i = 0; i <= steps; i++) {
     int pos = start1 + (diff * i / steps);
-
     servo1.write(pos);
-
     delay(delayTime);
   }
 }
@@ -81,37 +76,33 @@ void returnToNeutral() {
 }
 
 void rightLegSwing() {
-  moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 100, servoRightLeg, servoRightLeg.read(), 175, 20, 15); // Pozycja idąca lewa
+  moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 100, servoRightLeg, servoRightLeg.read(), 175, 20, 15); // Pozycja lewa
   delay(150);
-  servoLeftFoot.write(90 + 20);  // Obrót lewej stopy serwo 360
+  servoLeftFoot.write(90+20);  // Obrót lewej stopy serwo 360
 
-  moveServoSmooth(servoRightLeg, 175, 60, 20, 15);  
-  delay(100);  
-  moveServoSmooth(servoRightLeg, 60, 120, 20, 10);  
+  moveServoSmooth(servoRightLeg, 175, 60, 20, 10);
   delay(100);
-  moveServoSmooth(servoRightLeg, 120, 60, 20, 10);  
+
+  for (int i = 0; i < 4; i++) {  
+    moveServoSmooth(servoRightLeg, 60, 120, 20, 10);  
+    delay(100);
+    moveServoSmooth(servoRightLeg, 120, 60, 20, 10);  
+    delay(100);
+  }
+
+  moveServoSmooth(servoRightLeg, 60, 175, 20, 10);  
   delay(100);
-  moveServoSmooth(servoRightLeg, 60, 120, 20, 10);  
-  delay(100);
-  moveServoSmooth(servoRightLeg, 120, 60, 20, 10);  
-  delay(100);
-  moveServoSmooth(servoRightLeg, 60, 120, 20, 10);  
-  delay(100);
-  moveServoSmooth(servoRightLeg, 120, 60, 20, 10);  
-  delay(300);
-  moveServoSmooth(servoRightLeg, 60, 175, 20, 15);  
-  delay(150);
 }
 
 void moonWalk() {
-  moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 85, servoRightLeg, servoRightLeg.read(), 152, 30, 20); 
-  delay(150);
-  moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 35, servoRightLeg, servoRightLeg.read(), 103, 30, 20); 
-  delay(150);
-  moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 85, servoRightLeg, servoRightLeg.read(), 152, 30, 20); 
-  delay(150);
-  moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 35, servoRightLeg, servoRightLeg.read(), 103, 30, 20); 
-  delay(150);
+  for (int i = 0; i < 2; i++) { 
+    moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 25, servoRightLeg, servoRightLeg.read(), 93, 30, 20);
+    moveServoSmooth(servoLeftLeg, servoLeftLeg.read(), 100, 30, 20);
+    moveServoSmooth(servoLeftLeg, servoLeftLeg.read(), 25, 30, 20);
+    moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 95, servoRightLeg, servoRightLeg.read(), 162, 30, 20);
+    moveServoSmooth(servoRightLeg, servoRightLeg.read(), 80, 30, 20);
+    moveServoSmooth(servoRightLeg, servoRightLeg.read(), 162, 30, 20);
+  }
 }
 void setup() {
   servoLeftFoot.attach(servoLeftFootPin, 544, 2400);
@@ -138,7 +129,7 @@ void setup() {
 void loop() {
   if (PS4.isConnected()) {
 
-    // Sprawdzenie czy Square lub Circle są aktywne
+    // Sprawdzenie czy buttons są aktywne
     if (!manualOverride) {
       int leftFootSpeed = mapJoystickToSpeed(PS4.LStickY());
       int rightFootSpeed = mapJoystickToSpeed(PS4.RStickY());
@@ -152,7 +143,7 @@ void loop() {
       if (!wasSquarePressed) {
         wasSquarePressed = true;
         if (!SquareStateActive) {
-          moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 180, servoRightLeg, servoRightLeg.read(), 0, 20, 15);
+          moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 170, servoRightLeg, servoRightLeg.read(), 10, 20, 15);
           SquareStateActive = true;
         } else {
           returnToNeutral();
