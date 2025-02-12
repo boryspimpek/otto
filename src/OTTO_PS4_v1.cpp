@@ -31,15 +31,6 @@ void onDisConnect() {
   Serial.println("Disconnected!");
 }
 
-/*int mapJoystickToSpeed(int value) {
-  if (abs(value) < JOYSTICK_DEADZONE) {
-    return 90;  // Center position - stop for 360° servos
-  }
-  
-  int mappedSpeed = map(value, -128, 127, 0, 180);  // Maps to full speed range for 360° servos
-  return mappedSpeed;
-}*/
-
 void moveServosSmooth(Servo &servo1, int start1, int end1, Servo &servo2, int start2, int end2, int steps, int delayTime) {
   int diff1 = end1 - start1;
   int diff2 = end2 - start2;
