@@ -104,6 +104,7 @@ void moonWalk() {
     moveServoSmooth(servoRightLeg, servoRightLeg.read(), 162, 30, 20);
   }
 }
+
 void setup() {
   servoLeftFoot.attach(servoLeftFootPin, 544, 2400);
   servoRightFoot.attach(servoRightFootPin, 544, 2400);
