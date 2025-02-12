@@ -20,6 +20,9 @@ bool wasR1Pressed = false;
 bool SquareStateActive = false;
 bool manualOverride = false;
 
+const int JOYSTICK_DEADZONE = 10;
+const int MAX_SERVO_SPEED = 180;
+
 int LNP = 65;     // Left leg neutral position
 int RNP = 117;    // Right leg neutral position
 
@@ -62,6 +65,15 @@ void returnToNeutral() {
   servoLeftFoot.write(90);
   servoRightFoot.write(90);
 }
+
+int mapJoystickToSpeed(int value) {
+  if (abs(value) < JOYSTICK_DEADZONE) {
+    return 90;  // Center position - stop for 360° servos
+  }
+  
+  int mappedSpeed = map(value, -128, 127, 0, 180);  // Maps to full speed range for 360° servos
+  return mappedSpeed;
+  }
 
 void rightLegSwing() {
   moveServosSmooth(servoLeftLeg, servoLeftLeg.read(), 100, servoRightLeg, servoRightLeg.read(), 175, 20, 15); // Pozycja lewa
@@ -118,41 +130,11 @@ void loop() {
   if (PS4.isConnected()) {
     // Sterowanie serwami 360 za pomocą joysticków (gdy nie ma manualOverride)
     if (!manualOverride) {
-      // Odczyt wartości joysticków PS4
-      int leftStickY = PS4.LStickY();  
-      int rightStickX = PS4.RStickX(); 
-      
-      // Przeliczanie wartości joysticka na offset dla serw
-      int speedOffset = map(leftStickY, -128, 127, -30, 30);
-      int turnOffset = map(abs(rightStickX), 0, 128, 0, 20);
-      
-      // Dodanie strefy martwej
-      if (abs(leftStickY) < 20) speedOffset = 0;
-      if (abs(rightStickX) < 20) turnOffset = 0;
-      
-      // Obliczanie prędkości serw (spowolnienie jednej strony)
-      int leftSpeed = 98 + speedOffset;
-      int rightSpeed = 90 - speedOffset;
-      
-      if (rightStickX > 0) { 
-        // Skręt w prawo -> zwalniamy lewe serwo
-        leftSpeed += turnOffset;
-      } 
-      else if (rightStickX < 0) { 
-        // Skręt w lewo -> zwalniamy prawe serwo
-        rightSpeed -= turnOffset;
-      }
+      int leftFootSpeed = mapJoystickToSpeed(PS4.LStickY());
+      int rightFootSpeed = mapJoystickToSpeed(PS4.RStickY());
 
-      // Wysłanie wartości do serw
-      servoLeftFoot.write(leftSpeed);
-      servoRightFoot.write(rightSpeed);
-      
-      // Opcjonalne: Wibracja kontrolera przy dużej prędkości
-      if (abs(speedOffset) > 25) {
-        PS4.setRumble(abs(speedOffset), abs(speedOffset));
-      } else {
-        PS4.setRumble(0, 0);
-      }
+      servoLeftFoot.write(leftFootSpeed);
+      servoRightFoot.write(180 - rightFootSpeed);
     }
 
     // Square button handling
